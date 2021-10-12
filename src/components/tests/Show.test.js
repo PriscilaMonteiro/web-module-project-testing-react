@@ -3,24 +3,65 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import Show from './../Show';
-
+// to get the data instructure go to Show.js and console.log("show data----", show) don't need to use image
 const testShow = {
-    //add in approprate test data structure here.
-}
+    name: 'test:Stranger Things', 
+    summary: "test:A love letter to the '80s ...little girl.", seasons: [ 
+        {
+            id: 0, 
+            name: 'Season 1', 
+            episodes: []
+        },
+        {
+            id: 1, 
+            name: 'Season 3', 
+            episodes: []
+        },
+    ]
+};
+    
+
 
 test('renders testShow and no selected Season without errors', ()=>{
+    render(<Show show={testShow} selectedSeason={"none"}/>);
 });
 
 test('renders Loading component when prop show is null', () => {
+    render(<Show show={null}/>);
+    const loading = screen.queryByTestId("loading-container");
+    expect(loading).toHaveTextContent("Fetching data...");
+    expect(loading).toBeInTheDocument();
+
 });
 
-test('renders same number of options seasons are passed in', ()=>{
+test('renders same number of options seasons are passed in', ()=>{render(<Show show={testShow} selectedSeason={"none"}/>);
+const seasons = screen.queryAllByTestId("season-option");
+expect(seasons).toHaveLength(2);
 });
 
 test('handleSelect is called when an season is selected', () => {
+    const handleSelect = jest.fn();
+    render(<Show show={testShow} selectedSeason={"none"} handleSelect={handleSelect}/>);
+    const select = screen.queryByLabelText(/Select A Season/i)
+    userEvent.selectOptions(select, ['1']);
+
+expect(handleSelect).toBeCalled();
 });
 
+
 test('component renders when no seasons are selected and when rerenders with a season passed in', () => {
+     const { rerender } = render(<Show show={testShow}selectedSeason={"none"}/>)
+    
+    let episodes = screen.queryByTestId("episodes-container" );
+   
+    expect(episodes).not.toBeInTheDocument();
+    
+    
+    rerender(<Show show={testShow} selectedSeason={1}/>);
+    //Act 2: gets the missions from our component
+    episodes = screen.queryByTestId("episodes-container");
+    //Assert 2: checks that 3 missions are on the screen.
+    expect(episodes).toBeInTheDocument();
 });
 
 //Tasks:
