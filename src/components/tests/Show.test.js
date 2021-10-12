@@ -58,9 +58,9 @@ test('component renders when no seasons are selected and when rerenders with a s
     
     
     rerender(<Show show={testShow} selectedSeason={1}/>);
-    //Act 2: gets the missions from our component
+    
     episodes = screen.queryByTestId("episodes-container");
-    //Assert 2: checks that 3 missions are on the screen.
+    
     expect(episodes).toBeInTheDocument();
 });
 
